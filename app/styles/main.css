@@ -1,0 +1,59 @@
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/*cropping img*/
+
+.container {
+    background: #989494;
+    position: relative;
+    width: 500px;
+    height: 500px;
+}
+
+.origin-img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.layout {
+    background: rgba(37, 34, 34, .5);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 500px;
+    height: 500px;
+}
+
+.cropp {
+    border: 2px solid crimson;
+    cursor: move;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 350px;
+    height: 250px;
+}
+
+.crop-img {
+    display: block;
+    position: absolute;
+}
+
+.square {
+    background: crimson;
+    cursor: nw-resize;
+    display: block;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+}
