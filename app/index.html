@@ -10,6 +10,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
+<div class="croppCoords">
+    <label for="cropp_x" class="label"> top/left X
+        <input id="cropp_x" type="text" class="input" readonly>
+    </label>
+    <label for="cropp_y" class="label"> top/left Y
+        <input id="cropp_y" type="text" class="input" readonly>
+    </label>
+    <label for="cropp_xx" class="label"> bottom/right X
+        <input id="cropp_xx" type="text" class="input" readonly>
+    </label>
+    <label for="cropp_yy" class="label"> bottom/right Y
+        <input id="cropp_yy" type="text" class="input" readonly>
+    </label>
+    <label for="isRelative" class="label"> show relative coords
+        <input type="checkbox" id="isRelative" class="input">
+    </label>
+</div>
 <div class="container" id="container">
     <img src="img/img1.jpg" alt="origin" class="origin-img" id="originImg">
     <div class="layout"></div>

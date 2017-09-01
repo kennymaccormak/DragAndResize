@@ -4,6 +4,12 @@ $(function () {
         croppImg = $("#croppImg"),
         originImg = $("#originImg"),
         square = $("#square"),
+        cropp_x = $("#cropp_x"),
+        cropp_y = $("#cropp_y"),
+        cropp_xx = $("#cropp_xx"),
+        cropp_yy = $("#cropp_yy"),
+        isRelative = $("#isRelative"),
+        showRelativeCoords = false,
         isMouseDown = false,
         isResizing = false,
         containerProperty = {
@@ -17,6 +23,12 @@ $(function () {
             croppLeft: 0,
             croppHeight: 0,
             croppWidth: 0
+        },
+        croppCoords = {
+            x: 0,
+            y: 0,
+            _x: 0,
+            _y: 0
         },
         originImgProperty = {
             originImgTop: 0,
@@ -32,6 +44,8 @@ $(function () {
         },
         coords = {}
     ;
+
+
 
     function getContainerProperty() {
         containerProperty.containerTop = parseFloat(container[0].offsetTop);
@@ -59,6 +73,25 @@ $(function () {
         originImgCoords.y = containerProperty.containerLeft;
         originImgCoords._x = containerProperty.containerLeft + originImgProperty.originImgWidth;
         originImgCoords._y = containerProperty.containerTop + originImgProperty.originImgHeight;
+    }
+
+    function getCroppCoords() {
+        croppCoords.x = croppProperty.croppTop + containerProperty.containerTop;
+        croppCoords.y = croppProperty.croppLeft + containerProperty.containerLeft;
+        croppCoords._x = croppCoords.x + croppProperty.croppHeight;
+        croppCoords._y = croppCoords.y + croppProperty.croppWidth;
+
+        if (showRelativeCoords) {
+            croppCoords.x = croppProperty.croppTop;
+            croppCoords.y = croppProperty.croppLeft;
+            croppCoords._x = croppCoords.x + croppProperty.croppHeight;
+            croppCoords._y = croppCoords.y + croppProperty.croppWidth;
+        }
+
+        cropp_x.val(croppCoords.x);
+        cropp_y.val(croppCoords.y);
+        cropp_xx.val(croppCoords._x);
+        cropp_yy.val(croppCoords._y);
     }
 
     function getProperty() {
@@ -230,6 +263,7 @@ $(function () {
     $(document).mousemove(function (event) {
         var top = event.clientY - coords.relativeMouseY;
         var left = event.clientX - coords.relativeMouseX;
+        getCroppCoords();
         getProperty();
         if (checkMove() && isMouseDown && !isResizing) {
             moveCroppArea(top, left);
@@ -240,8 +274,15 @@ $(function () {
         }
     });
 
+    isRelative.click(function () {
+        showRelativeCoords = $("#isRelative:checked").length !== 0;
+        getCroppCoords();
+    });
+
     cropp.on("dragstart", function () {
         return false;
     });
+
+
 
 });

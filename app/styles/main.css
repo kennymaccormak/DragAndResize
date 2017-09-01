@@ -9,6 +9,28 @@ body {
     padding: 0;
 }
 
+/*cropp coords*/
+
+.croppCoords {
+    padding: 10px;
+    overflow: hidden;
+}
+
+.label {
+    display: block;
+    float: left;
+    margin-right: 10px;
+}
+
+.input {
+    font-size: 15px;
+    line-height: 18px;
+    text-align: center;
+    display: block;
+    outline: none;
+    padding: 0 10px;
+}
+
 /*cropping img*/
 
 .container {
@@ -49,6 +71,7 @@ body {
 .crop-img {
     display: block;
     position: absolute;
+    user-select: none;
 }
 
 .square {
