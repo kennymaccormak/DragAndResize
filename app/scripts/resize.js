@@ -64,9 +64,7 @@ $(function () {
             square.css({"left": croppProperty.croppWidth + croppProperty.croppLeft - 2});
             cropp.css({"height": 2});
             return false;
-        }
-
-        else {
+        } else {
             return true;
         }
     }

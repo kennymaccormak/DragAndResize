@@ -16,6 +16,8 @@ body {
     position: relative;
     width: 500px;
     height: 500px;
+    top: 120px;
+    left: 225px;
 }
 
 .origin-img {

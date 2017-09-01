@@ -4,49 +4,52 @@ $(function () {
         originImg = $("#originImg"),
         square = $("#square"),
         isMouseDown = false,
-        croppTop,
-        croppLeft,
-        croppHeight,
-        croppWidth,
-        originImgWidth,
-        originImgHeight,
+        croppProperty = {
+            croppTop: 0,
+            croppLeft: 0,
+            croppHeight: 0,
+            croppWidth: 0
+        },
+        originImgProperty = {
+            originImgTop: parseFloat(originImg.position().top),
+            originImgLeft: parseFloat(originImg.position().left),
+            originImgHeight: parseFloat(originImg.css("height")),
+            originImgWidth: parseFloat(originImg.css("width"))
+        },
         coords = {}
     ;
 
     // set cropp image position
     function positioningCroppImg() {
         // cropp element: top, left
-        croppTop = parseFloat(cropp.css("top"));
-        croppLeft = parseFloat(cropp.css("left"));
+        croppProperty.croppTop = parseFloat(cropp.position().top);
+        croppProperty.croppLeft = parseFloat(cropp.position().left);
 
         // 2px - border
-        var croppImgTop = -croppTop - 2,
-            croppImgLeft = -croppLeft - 2
+        var croppImgTop = -croppProperty.croppTop - 2,
+            croppImgLeft = -croppProperty.croppLeft - 2
         ;
-        // width and height of original image
-        originImgWidth = parseFloat(originImg.css("width"));
-        originImgHeight = parseFloat(originImg.css("height"));
         // set position for cropp image
         croppImg.css({
             "top": croppImgTop + "px",
             "left": croppImgLeft + "px",
-            "width": originImgWidth + "px",
-            "height": originImgHeight + "px"
+            "width": originImgProperty.originImgWidth + "px",
+            "height": originImgProperty.originImgHeight + "px"
         });
     }
 
     // set image resize square position
     function positioningSquare() {
         // cropp element: height, width, top, left
-        croppHeight = parseFloat(cropp.css("height"));
-        croppWidth = parseFloat(cropp.css("width"));
-        croppTop = parseFloat(cropp.css("top"));
-        croppLeft = parseFloat(cropp.css("left"));
+        croppProperty.croppHeight = parseFloat(cropp.css("height"));
+        croppProperty.croppWidth = parseFloat(cropp.css("width"));
+        croppProperty.croppTop = parseFloat(cropp.position().top);
+        croppProperty.croppLeft = parseFloat(cropp.position().left);
 
         var squareTop, squareLeft;
         // get resize square coords
-        squareTop = croppHeight + croppTop - 2;
-        squareLeft = croppWidth + croppLeft - 2;
+        squareTop = croppProperty.croppHeight + croppProperty.croppTop - 2;
+        squareLeft = croppProperty.croppWidth + croppProperty.croppLeft - 2;
         // set position for resize square
         square.css({
             "top": squareTop + "px",
@@ -77,10 +80,10 @@ $(function () {
     }
 
     function checkMove(top, left) {
-        left = parseFloat(cropp.css("left"));
-        top = parseFloat(cropp.css("top"));
-        var right = croppWidth + left - 4,
-            bottom = croppHeight + top - 4
+        left = parseFloat(cropp.position().left);
+        top = parseFloat(cropp.position().top);
+        var right = croppProperty.croppWidth + left - 4,
+            bottom = croppProperty.croppHeight + top - 4
         ;
 
         if (top < 0) {
@@ -91,12 +94,12 @@ $(function () {
             setCroppArea(top, 0);
         }
 
-        if (bottom > originImgHeight) {
-            setCroppArea(bottom - croppHeight - 4, left);
+        if (bottom > originImgProperty.originImgHeight) {
+            setCroppArea(bottom - croppProperty.croppHeight - 4, left);
         }
 
-        if (right > originImgWidth) {
-            setCroppArea(top, right - croppWidth - 4);
+        if (right > originImgProperty.originImgWidth) {
+            setCroppArea(top, right - croppProperty.croppWidth - 4);
         }
     }
 
@@ -110,8 +113,8 @@ $(function () {
         (event.which === 1) ? isMouseDown = true : isMouseDown = false;
         coords.mouseX = event.pageX;
         coords.mouseY = event.pageY;
-        coords.relativeMouseX = coords.mouseX - croppLeft;
-        coords.relativeMouseY = coords.mouseY - croppTop;
+        coords.relativeMouseX = coords.mouseX - croppProperty.croppLeft;
+        coords.relativeMouseY = coords.mouseY - croppProperty.croppTop;
     });
 
     cropp.mouseup(function () {
