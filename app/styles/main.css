@@ -9,14 +9,19 @@ body {
     padding: 0;
 }
 
+
 /*cropp coords*/
 
+.controls,
 .croppCoords {
     padding: 10px;
     overflow: hidden;
 }
 
 .label {
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 18px;
     display: block;
     float: left;
     margin-right: 10px;
@@ -26,7 +31,17 @@ body {
     font-size: 15px;
     line-height: 18px;
     text-align: center;
-    display: block;
+    display: inline-block;
+    outline: none;
+    padding: 0 10px;
+    max-width: 50px;
+}
+
+.checkbox {
+    font-size: 15px;
+    line-height: 18px;
+    text-align: center;
+    display: inline-block;
     outline: none;
     padding: 0 10px;
 }
@@ -66,12 +81,17 @@ body {
     left: 0;
     width: 350px;
     height: 250px;
+    z-index: 15;
 }
 
 .crop-img {
     display: block;
     position: absolute;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
+    z-index: 2;
 }
 
 .square {
@@ -81,4 +101,5 @@ body {
     position: absolute;
     width: 10px;
     height: 10px;
+    z-index: 15;
 }

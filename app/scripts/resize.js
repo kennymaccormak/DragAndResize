@@ -69,7 +69,6 @@ $(function () {
         }
     }
 
-
     square.mousedown(function (event) {
         if (event.which === 1) {
             isResizing = true;

@@ -45,8 +45,6 @@ $(function () {
         coords = {}
     ;
 
-
-
     function getContainerProperty() {
         containerProperty.containerTop = parseFloat(container[0].offsetTop);
         containerProperty.containerLeft = parseFloat(container[0].offsetLeft);
@@ -76,14 +74,15 @@ $(function () {
     }
 
     function getCroppCoords() {
-        croppCoords.x = croppProperty.croppTop + containerProperty.containerTop;
-        croppCoords.y = croppProperty.croppLeft + containerProperty.containerLeft;
-        croppCoords._x = croppCoords.x + croppProperty.croppHeight;
-        croppCoords._y = croppCoords.y + croppProperty.croppWidth;
 
         if (showRelativeCoords) {
             croppCoords.x = croppProperty.croppTop;
             croppCoords.y = croppProperty.croppLeft;
+            croppCoords._x = croppCoords.x + croppProperty.croppHeight;
+            croppCoords._y = croppCoords.y + croppProperty.croppWidth;
+        } else {
+            croppCoords.x = croppProperty.croppTop + containerProperty.containerTop;
+            croppCoords.y = croppProperty.croppLeft + containerProperty.containerLeft;
             croppCoords._x = croppCoords.x + croppProperty.croppHeight;
             croppCoords._y = croppCoords.y + croppProperty.croppWidth;
         }
@@ -142,8 +141,6 @@ $(function () {
         positioningCroppImg();
         positioningSquare();
     }
-
-    positioningElements();
 
     // moving
 
@@ -222,11 +219,11 @@ $(function () {
         }
     }
 
+    positioningElements();
+
     //  moving events
     cropp.mousedown(function (event) {
-        if (event.which === 1) {
-            isMouseDown = true;
-        }
+        isMouseDown = event.which === 1;
         setCoords(event);
     });
 
@@ -238,7 +235,6 @@ $(function () {
 
     // resizing events
     square.mousedown(function (event) {
-
         if (event.which === 1) {
             isResizing = true;
             getCroppProperty();
@@ -282,7 +278,4 @@ $(function () {
     cropp.on("dragstart", function () {
         return false;
     });
-
-
-
 });
