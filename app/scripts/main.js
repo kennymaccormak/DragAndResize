@@ -278,4 +278,7 @@ $(function () {
     cropp.on("dragstart", function () {
         return false;
     });
+    square.on("dragstart", croppImg, function () {
+        return false;
+    });
 });
