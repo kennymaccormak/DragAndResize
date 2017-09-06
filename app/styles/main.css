@@ -95,10 +95,25 @@ body {
 
 .square {
     background: crimson;
-    cursor: nw-resize;
     display: block;
     position: absolute;
     width: 10px;
     height: 10px;
     z-index: 15;
+}
+
+.square-top-left {
+    cursor: se-resize;
+}
+
+.square-top-right {
+    cursor: sw-resize;
+}
+
+.square-bottom-left {
+    cursor: ne-resize;
+}
+
+.square-bottom-right {
+    cursor: nw-resize;
 }

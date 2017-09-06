@@ -3,7 +3,10 @@ $(function () {
         container = $("#container"),
         croppImg = $("#croppImg"),
         originImg = $("#originImg"),
-        square = $("#square"),
+        square1 = $("#square1"),
+        square2 = $("#square2"),
+        square3 = $("#square3"),
+        square4 = $("#square4"),
         cropp_x = $("#cropp_x"),
         cropp_y = $("#cropp_y"),
         cropp_xx = $("#cropp_xx"),
@@ -124,22 +127,66 @@ $(function () {
         });
     }
 
-    function positioningSquare() {
+    function positioningSquares(square, newTop, newLeft) {
         var squareTop, squareLeft;
-        // get resize square coords
-        squareTop = croppProperty.croppHeight + croppProperty.croppTop - 2;
-        squareLeft = croppProperty.croppWidth + croppProperty.croppLeft - 2;
-        // set position for resize square
+        // get resize square1 coords
+        squareTop = newTop - 2;
+        squareLeft = newLeft - 2;
+        // set position for resize square1
         square.css({
             "top": squareTop + "px",
             "left": squareLeft + "px"
         });
+ /*
+        var squareTop1, squareLeft1;
+        var squareTop2, squareLeft2;
+        var squareTop3, squareLeft3;
+        var squareTop4, squareLeft4;
+        // get resize square1 coords
+        squareTop1 = croppProperty.croppTop - 2;
+        squareLeft1 = croppProperty.croppLeft - 2;
+        // set position for resize square1
+        square1.css({
+            "top": squareTop1 + "px",
+            "left": squareLeft1 + "px"
+        });
+        // get resize square2 coords
+        squareTop2 = croppProperty.croppTop - 2;
+        squareLeft2 = croppProperty.croppWidth + croppProperty.croppLeft - 2;
+        // set position for resize square2
+        square2.css({
+            "top": squareTop2 + "px",
+            "left": squareLeft2 + "px"
+        });
+        // get resize square3 coords
+        squareTop3 = croppProperty.croppHeight + croppProperty.croppTop - 2;
+        squareLeft3 = croppProperty.croppLeft - 2;
+        // set position for resize square3
+        square3.css({
+            "top": squareTop3 + "px",
+            "left": squareLeft3 + "px"
+        });
+        // get resize square4 coords
+        squareTop4 = croppProperty.croppHeight + croppProperty.croppTop - 2;
+        squareLeft4 = croppProperty.croppWidth + croppProperty.croppLeft - 2;
+        // set position for resize square4
+        square4.css({
+            "top": squareTop4 + "px",
+            "left": squareLeft4 + "px"
+        });*/
     }
 
-    // set position for resize square and cropp image
+    function setSquareTopLeft() {
+        positioningSquares(square1, croppProperty.croppTop, croppProperty.croppLeft);
+        positioningSquares(square2, croppProperty.croppTop, croppProperty.croppWidth + croppProperty.croppLeft);
+        positioningSquares(square3, croppProperty.croppHeight + croppProperty.croppTop, croppProperty.croppWidth + croppProperty.croppLeft);
+        positioningSquares(square4, croppProperty.croppHeight + croppProperty.croppTop, croppProperty.croppLeft);
+    }
+
+    // set position for resize square1 and cropp image
     function positioningElements() {
         positioningCroppImg();
-        positioningSquare();
+        setSquareTopLeft()
     }
 
     // moving
@@ -188,30 +235,30 @@ $(function () {
     }
 
     function moveSquare(event) {
-        square.css({"top": event.pageY - containerProperty.containerTop - 2});
-        square.css({"left": event.pageX - containerProperty.containerLeft - 2});
+        square3.css({"top": event.pageY - containerProperty.containerTop - 2});
+        square3.css({"left": event.pageX - containerProperty.containerLeft - 2});
         resizingCroppArea(event);
     }
 
     function checkResizing(pageX, pageY) {
         if (pageX > originImgCoords._x) {
-            square.css({"top": croppProperty.croppHeight + croppProperty.croppTop - 2});
-            square.css({"left": originImgCoords._x - 4 - containerProperty.containerLeft});
+            square3.css({"top": croppProperty.croppHeight + croppProperty.croppTop - 2});
+            square3.css({"left": originImgCoords._x - 4 - containerProperty.containerLeft});
             cropp.css({"width": originImgProperty.originImgWidth - croppProperty.croppLeft - 2});
             return false;
         } else if (pageY > originImgCoords._y) {
-            square.css({"top": originImgCoords._y - 4 - containerProperty.containerTop});
-            square.css({"left": croppProperty.croppWidth + croppProperty.croppLeft - 2});
+            square3.css({"top": originImgCoords._y - 4 - containerProperty.containerTop});
+            square3.css({"left": croppProperty.croppWidth + croppProperty.croppLeft - 2});
             cropp.css({"height": originImgProperty.originImgHeight - croppProperty.croppTop - 2});
             return false;
         } else if (pageX < croppProperty.croppLeft + containerProperty.containerLeft) {
-            square.css({"top": croppProperty.croppHeight + croppProperty.croppTop - 2});
-            square.css({"left": croppProperty.croppLeft});
+            square3.css({"top": croppProperty.croppHeight + croppProperty.croppTop - 2});
+            square3.css({"left": croppProperty.croppLeft});
             cropp.css({"width": 2});
             return false;
         } else if (pageY < croppProperty.croppTop + containerProperty.containerTop) {
-            square.css({"top": croppProperty.croppTop});
-            square.css({"left": croppProperty.croppWidth + croppProperty.croppLeft - 2});
+            square3.css({"top": croppProperty.croppTop});
+            square3.css({"left": croppProperty.croppWidth + croppProperty.croppLeft - 2});
             cropp.css({"height": 2});
             return false;
         } else {
@@ -234,14 +281,14 @@ $(function () {
     });
 
     // resizing events
-    square.mousedown(function (event) {
+    square3.mousedown(function (event) {
         if (event.which === 1) {
             isResizing = true;
             getCroppProperty();
         }
     });
 
-    square.mouseup(function () {
+    square3.mouseup(function () {
         if (event.which === 1) {
             isResizing = false;
         }
@@ -278,7 +325,7 @@ $(function () {
     cropp.on("dragstart", function () {
         return false;
     });
-    square.on("dragstart", croppImg, function () {
+    square3.on("dragstart", croppImg, function () {
         return false;
     });
 });
