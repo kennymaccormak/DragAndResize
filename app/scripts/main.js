@@ -202,18 +202,19 @@ $(function () {
     function checkMove() {
         var left = parseFloat(cropp.position().left);
         var top = parseFloat(cropp.position().top);
-        var right = croppProperty.croppWidth + left - 4,
-            bottom = croppProperty.croppHeight + top - 4
-        ;
+        var right = croppProperty.croppWidth + left - 4;
+        var bottom = croppProperty.croppHeight + top - 4;
+        var fixedBottom = bottom - croppProperty.croppHeight - 4;
+        var newLeft = left - (left + croppProperty.croppWidth - originImgProperty.originImgWidth) - 4;
 
         if (top < originImgProperty.originImgTop) {
             setCroppArea(originImgProperty.originImgTop, left);
         } else if (left < originImgProperty.originImgLeft) {
             setCroppArea(top, originImgProperty.originImgLeft);
         } else if (bottom > originImgProperty.originImgHeight) {
-            setCroppArea(bottom - croppProperty.croppHeight - 4, left);
+            setCroppArea(fixedBottom, left);
         } else if (right > originImgProperty.originImgWidth) {
-            setCroppArea(top, right - croppProperty.croppWidth - 4);
+            setCroppArea(top, newLeft);
         } else {
             return true
         }
@@ -238,6 +239,7 @@ $(function () {
         square3.css({"top": event.pageY - containerProperty.containerTop - 2});
         square3.css({"left": event.pageX - containerProperty.containerLeft - 2});
         resizingCroppArea(event);
+        setSquareTopLeft();
     }
 
     function checkResizing(pageX, pageY) {
