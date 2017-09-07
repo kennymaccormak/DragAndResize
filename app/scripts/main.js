@@ -137,43 +137,6 @@ $(function () {
             "top": squareTop + "px",
             "left": squareLeft + "px"
         });
- /*
-        var squareTop1, squareLeft1;
-        var squareTop2, squareLeft2;
-        var squareTop3, squareLeft3;
-        var squareTop4, squareLeft4;
-        // get resize square1 coords
-        squareTop1 = croppProperty.croppTop - 2;
-        squareLeft1 = croppProperty.croppLeft - 2;
-        // set position for resize square1
-        square1.css({
-            "top": squareTop1 + "px",
-            "left": squareLeft1 + "px"
-        });
-        // get resize square2 coords
-        squareTop2 = croppProperty.croppTop - 2;
-        squareLeft2 = croppProperty.croppWidth + croppProperty.croppLeft - 2;
-        // set position for resize square2
-        square2.css({
-            "top": squareTop2 + "px",
-            "left": squareLeft2 + "px"
-        });
-        // get resize square3 coords
-        squareTop3 = croppProperty.croppHeight + croppProperty.croppTop - 2;
-        squareLeft3 = croppProperty.croppLeft - 2;
-        // set position for resize square3
-        square3.css({
-            "top": squareTop3 + "px",
-            "left": squareLeft3 + "px"
-        });
-        // get resize square4 coords
-        squareTop4 = croppProperty.croppHeight + croppProperty.croppTop - 2;
-        squareLeft4 = croppProperty.croppWidth + croppProperty.croppLeft - 2;
-        // set position for resize square4
-        square4.css({
-            "top": squareTop4 + "px",
-            "left": squareLeft4 + "px"
-        });*/
     }
 
     function setSquareTopLeft() {
@@ -204,15 +167,15 @@ $(function () {
         var top = parseFloat(cropp.position().top);
         var right = croppProperty.croppWidth + left - 4;
         var bottom = croppProperty.croppHeight + top - 4;
-        var fixedBottom = bottom - croppProperty.croppHeight - 4;
-        var newLeft = left - (left + croppProperty.croppWidth - originImgProperty.originImgWidth) - 4;
+        var newTop = originImgProperty.originImgHeight - croppProperty.croppHeight - 4;
+        var newLeft = originImgProperty.originImgWidth - croppProperty.croppWidth - 4;
 
         if (top < originImgProperty.originImgTop) {
             setCroppArea(originImgProperty.originImgTop, left);
         } else if (left < originImgProperty.originImgLeft) {
             setCroppArea(top, originImgProperty.originImgLeft);
         } else if (bottom > originImgProperty.originImgHeight) {
-            setCroppArea(fixedBottom, left);
+            setCroppArea(newTop, left);
         } else if (right > originImgProperty.originImgWidth) {
             setCroppArea(top, newLeft);
         } else {
@@ -306,11 +269,12 @@ $(function () {
     });
 
     $(document).mousemove(function (event) {
-        var top = event.clientY - coords.relativeMouseY;
-        var left = event.clientX - coords.relativeMouseX;
         getCroppCoords();
         getProperty();
         if (checkMove() && isMouseDown && !isResizing) {
+            var top = event.clientY - coords.relativeMouseY;
+            var left = event.clientX - coords.relativeMouseX;
+            console.log(top + ", " + left);
             moveCroppArea(top, left);
         } else if (isResizing && !isMouseDown && checkResizing(event.pageX, event.pageY)) {
             moveSquare(event);
