@@ -72,7 +72,6 @@ body {
 }
 
 .cropp {
-    border: 2px solid crimson;
     cursor: move;
     overflow: hidden;
     position: absolute;
@@ -94,26 +93,36 @@ body {
 }
 
 .square {
-    background: crimson;
+    /*background-color: #303e47;*/
+    /*border-radius: 100%;*/
+    border: 2px solid #fff;
     display: block;
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 20px;
+    height: 20px;
     z-index: 15;
 }
 
 .square-top-left {
-    cursor: se-resize;
+    border-bottom-width: 0;
+    border-right-width: 0;
+    cursor: nw-resize;
 }
 
 .square-top-right {
-    cursor: sw-resize;
-}
-
-.square-bottom-left {
+    border-bottom-width: 0;
+    border-left-width: 0;
     cursor: ne-resize;
 }
 
+.square-bottom-left {
+    border-top-width: 0;
+    border-right-width: 0;
+    cursor: sw-resize;
+}
+
 .square-bottom-right {
-    cursor: nw-resize;
+    border-top-width: 0;
+    border-left-width: 0;
+    cursor: se-resize;
 }

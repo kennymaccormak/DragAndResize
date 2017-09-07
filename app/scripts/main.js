@@ -1,242 +1,77 @@
 $(function () {
     var cropp = $("#cropp"),
-        container = $("#container"),
         croppImg = $("#croppImg"),
         originImg = $("#originImg"),
         square1 = $("#square1"),
         square2 = $("#square2"),
         square3 = $("#square3"),
         square4 = $("#square4"),
-        cropp_x = $("#cropp_x"),
-        cropp_y = $("#cropp_y"),
-        cropp_xx = $("#cropp_xx"),
-        cropp_yy = $("#cropp_yy"),
-        isRelative = $("#isRelative"),
-        showRelativeCoords = false,
         isMouseDown = false,
-        isResizing = false,
-        containerProperty = {
-            containerTop: 0,
-            containerLeft: 0,
-            containerHeight: 0,
-            containerWidth: 0
-        },
-        croppProperty = {
-            croppTop: 0,
-            croppLeft: 0,
-            croppHeight: 0,
-            croppWidth: 0
-        },
-        croppCoords = {
-            x: 0,
-            y: 0,
-            _x: 0,
-            _y: 0
-        },
-        originImgProperty = {
-            originImgTop: 0,
-            originImgLeft: 0,
-            originImgHeight: 0,
-            originImgWidth: 0
-        },
-        originImgCoords = {
-            x: 0,
-            y: 0,
-            _x: 0,
-            _y: 0
-        },
-        coords = {}
+        isResizing = false
     ;
 
-    function getContainerProperty() {
-        containerProperty.containerTop = parseFloat(container[0].offsetTop);
-        containerProperty.containerLeft = parseFloat(container[0].offsetLeft);
-        containerProperty.containerHeight = parseFloat(container.css("height"));
-        containerProperty.containerWidth = parseFloat(container.css("width"));
-    }
+    var BORDER_WIDTH = parseInt(square1.css("border-width")) || 0;
 
-    function getCroppProperty() {
-        croppProperty.croppTop = parseFloat(cropp.position().top);
-        croppProperty.croppLeft = parseFloat(cropp.position().left);
-        croppProperty.croppHeight = parseFloat(cropp.css("height"));
-        croppProperty.croppWidth = parseFloat(cropp.css("width"));
-    }
+    croppImg.css({
+        "width": originImg.css("width"),
+        "height": originImg.css("height")
+    });
 
-    function getOriginImgProperty() {
-        originImgProperty.originImgTop = parseFloat(originImg.position().top);
-        originImgProperty.originImgLeft = parseFloat(originImg.position().left);
-        originImgProperty.originImgHeight = parseFloat(originImg.css("height"));
-        originImgProperty.originImgWidth = parseFloat(originImg.css("width"));
-    }
-
-    function getOriginImgCoords() {
-        originImgCoords.x = containerProperty.containerTop;
-        originImgCoords.y = containerProperty.containerLeft;
-        originImgCoords._x = containerProperty.containerLeft + originImgProperty.originImgWidth;
-        originImgCoords._y = containerProperty.containerTop + originImgProperty.originImgHeight;
-    }
-
-    function getCroppCoords() {
-
-        if (showRelativeCoords) {
-            croppCoords.x = croppProperty.croppTop;
-            croppCoords.y = croppProperty.croppLeft;
-            croppCoords._x = croppCoords.x + croppProperty.croppHeight;
-            croppCoords._y = croppCoords.y + croppProperty.croppWidth;
-        } else {
-            croppCoords.x = croppProperty.croppTop + containerProperty.containerTop;
-            croppCoords.y = croppProperty.croppLeft + containerProperty.containerLeft;
-            croppCoords._x = croppCoords.x + croppProperty.croppHeight;
-            croppCoords._y = croppCoords.y + croppProperty.croppWidth;
-        }
-
-        cropp_x.val(croppCoords.x);
-        cropp_y.val(croppCoords.y);
-        cropp_xx.val(croppCoords._x);
-        cropp_yy.val(croppCoords._y);
-    }
-
-    function getProperty() {
-        getContainerProperty();
-        getCroppProperty();
-        getOriginImgProperty();
-        getOriginImgCoords()
-    }
-
-    function setCoords(event) {
-        coords.mouseX = event.pageX;
-        coords.mouseY = event.pageY;
-        coords.relativeMouseX = coords.mouseX - croppProperty.croppLeft;
-        coords.relativeMouseY = coords.mouseY - croppProperty.croppTop;
-    }
-
-    getProperty();
-
-    function positioningCroppImg() {
-        getCroppProperty();
-        // 2px - border
-        var croppImgTop = -croppProperty.croppTop - 2,
-            croppImgLeft = -croppProperty.croppLeft - 2
+    function positioningCroppImg(newTop, newLeft) {
+        var croppImgTop = -newTop,
+            croppImgLeft = -newLeft
         ;
-        // set position for cropp image
         croppImg.css({
             "top": croppImgTop + "px",
-            "left": croppImgLeft + "px",
-            "width": originImgProperty.originImgWidth + "px",
-            "height": originImgProperty.originImgHeight + "px"
+            "left": croppImgLeft + "px"
         });
     }
 
     function positioningSquares(square, newTop, newLeft) {
-        var squareTop, squareLeft;
-        // get resize square1 coords
-        squareTop = newTop - 2;
-        squareLeft = newLeft - 2;
-        // set position for resize square1
         square.css({
-            "top": squareTop + "px",
-            "left": squareLeft + "px"
+            "top": newTop,
+            "left": newLeft
         });
     }
 
-    function setSquareTopLeft() {
-        positioningSquares(square1, croppProperty.croppTop, croppProperty.croppLeft);
-        positioningSquares(square2, croppProperty.croppTop, croppProperty.croppWidth + croppProperty.croppLeft);
-        positioningSquares(square3, croppProperty.croppHeight + croppProperty.croppTop, croppProperty.croppWidth + croppProperty.croppLeft);
-        positioningSquares(square4, croppProperty.croppHeight + croppProperty.croppTop, croppProperty.croppLeft);
+    var originImageParams = {
+        height: parseFloat(originImg.css("height")),
+        width: parseFloat(originImg.css("width"))
+    };
+
+    var croppingAreaParams = {
+        height: parseFloat(cropp.css("height")),
+        width: parseFloat(cropp.css("width"))
+    };
+
+    function getMaxLegalTop() {
+        return originImageParams.height - croppingAreaParams.height;
     }
 
-    // set position for resize square1 and cropp image
-    function positioningElements() {
-        positioningCroppImg();
-        setSquareTopLeft()
+    function getMaxLegalLeft() {
+        return originImageParams.width - croppingAreaParams.width;
     }
 
-    // moving
-
-    function setCroppArea(top, left) {
-        cropp.css({"left": left});
-        cropp.css({"top": top});
-        positioningElements();
-        isMouseDown = false;
-        return false;
+    function getValidLeft(left) {
+        return Math.min(Math.max(left, 0), getMaxLegalLeft());
     }
 
-    function checkMove() {
-        var left = parseFloat(cropp.position().left);
-        var top = parseFloat(cropp.position().top);
-        var right = croppProperty.croppWidth + left - 4;
-        var bottom = croppProperty.croppHeight + top - 4;
-        var newTop = originImgProperty.originImgHeight - croppProperty.croppHeight - 4;
-        var newLeft = originImgProperty.originImgWidth - croppProperty.croppWidth - 4;
-
-        if (top < originImgProperty.originImgTop) {
-            setCroppArea(originImgProperty.originImgTop, left);
-        } else if (left < originImgProperty.originImgLeft) {
-            setCroppArea(top, originImgProperty.originImgLeft);
-        } else if (bottom > originImgProperty.originImgHeight) {
-            setCroppArea(newTop, left);
-        } else if (right > originImgProperty.originImgWidth) {
-            setCroppArea(top, newLeft);
-        } else {
-            return true
-        }
+    function getValidTop(top) {
+        return Math.min(Math.max(top, 0), getMaxLegalTop());
     }
 
     function moveCroppArea(top, left) {
-        cropp.css({"left": left});
-        cropp.css({"top": top});
-        positioningElements();
+        var legalLeft = getValidLeft(left);
+        var legalTop = getValidTop(top);
+
+        cropp.css({"left": legalLeft});
+        cropp.css({"top": legalTop});
+
+        positioningCroppImg(legalTop, legalLeft);
     }
 
-    // resizing
-
-    function resizingCroppArea(event) {
-        croppProperty.croppHeight = event.pageY - containerProperty.containerTop - croppProperty.croppTop;
-        croppProperty.croppWidth = event.pageX - containerProperty.containerLeft - croppProperty.croppLeft;
-        cropp.css({"height": croppProperty.croppHeight});
-        cropp.css({"width": croppProperty.croppWidth});
-    }
-
-    function moveSquare(event) {
-        square3.css({"top": event.pageY - containerProperty.containerTop - 2});
-        square3.css({"left": event.pageX - containerProperty.containerLeft - 2});
-        resizingCroppArea(event);
-        setSquareTopLeft();
-    }
-
-    function checkResizing(pageX, pageY) {
-        if (pageX > originImgCoords._x) {
-            square3.css({"top": croppProperty.croppHeight + croppProperty.croppTop - 2});
-            square3.css({"left": originImgCoords._x - 4 - containerProperty.containerLeft});
-            cropp.css({"width": originImgProperty.originImgWidth - croppProperty.croppLeft - 2});
-            return false;
-        } else if (pageY > originImgCoords._y) {
-            square3.css({"top": originImgCoords._y - 4 - containerProperty.containerTop});
-            square3.css({"left": croppProperty.croppWidth + croppProperty.croppLeft - 2});
-            cropp.css({"height": originImgProperty.originImgHeight - croppProperty.croppTop - 2});
-            return false;
-        } else if (pageX < croppProperty.croppLeft + containerProperty.containerLeft) {
-            square3.css({"top": croppProperty.croppHeight + croppProperty.croppTop - 2});
-            square3.css({"left": croppProperty.croppLeft});
-            cropp.css({"width": 2});
-            return false;
-        } else if (pageY < croppProperty.croppTop + containerProperty.containerTop) {
-            square3.css({"top": croppProperty.croppTop});
-            square3.css({"left": croppProperty.croppWidth + croppProperty.croppLeft - 2});
-            cropp.css({"height": 2});
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    positioningElements();
-
-    //  moving events
     cropp.mousedown(function (event) {
         isMouseDown = event.which === 1;
-        setCoords(event);
     });
 
     cropp.mouseup(function () {
@@ -245,11 +80,78 @@ $(function () {
         }
     });
 
-    // resizing events
+    var angleParams = {
+        width: square1.width(),
+        height: square1.height()
+    };
+
+    function getMaxLegalAngleTop() {
+        return originImageParams.height - angleParams.height;
+    }
+
+    function getMaxLegalAngleLeft() {
+        return originImageParams.width - angleParams.width - BORDER_WIDTH;
+    }
+
+    function getValidAngleTop(top) {
+        return Math.min(Math.max(top, 0), getMaxLegalAngleTop());
+    }
+
+    function getValidAngleLeft(left) {
+        return Math.min(Math.max(left, 0), getMaxLegalAngleLeft());
+    }
+
+    function moveCroppingAngle(angle, deltaX, deltaY) {
+        var newTop = parseInt(angle.css("top")) - deltaY;
+        var newLeft = parseInt(angle.css("left")) - deltaX;
+
+        var legalTop = getValidAngleTop(newTop);
+        var legalLeft = getValidAngleLeft(newLeft);
+
+        angle.css({
+            top: legalTop,
+            left: legalLeft
+        });
+    }
+
+    function moveCroppingAngles2(angleIndex, deltaX, deltaY) {
+        var angle1X = 0, angle1Y = 0;
+        var angle2X = 0, angle2Y = 0;
+        var angle3X = 0, angle3Y = 0;
+        var angle4X = 0, angle4Y = 0;
+
+        switch (angleIndex) {
+            case 0:
+                angle1X = angle4X = deltaX;
+                angle1Y = angle2Y = deltaY;
+                break;
+            case 1:
+                angle2X = angle3X = deltaX;
+                angle2Y = angle1Y = deltaY;
+                break;
+            case 2:
+                angle3X = angle2X = deltaX;
+                angle3Y = angle4Y = deltaY;
+                break;
+            case 3:
+                angle4X = angle1X = deltaX;
+                angle4Y = angle3Y = deltaY;
+                break;
+        }
+
+        moveCroppingAngle(square1, angle1X, angle1Y);
+        moveCroppingAngle(square2, angle2X, angle2Y);
+        moveCroppingAngle(square3, angle3X, angle3Y);
+        moveCroppingAngle(square4, angle4X, angle4Y);
+    }
+
+    var resizeAngle; // top left = 0, top right = 1 and so on...
+
     square3.mousedown(function (event) {
         if (event.which === 1) {
             isResizing = true;
-            getCroppProperty();
+            resizeAngle = 2;
+            isMouseDown = true;
         }
     });
 
@@ -259,8 +161,6 @@ $(function () {
         }
     });
 
-    // general events
-
     $(document).mouseup(function () {
         if (event.which === 1) {
             isMouseDown = false;
@@ -268,30 +168,94 @@ $(function () {
         }
     });
 
+    (function setStartCroppingAngles() {
+        moveCroppingAngles(0, 0);
+    })();
+
+    function moveCroppingAngles(top, left) {
+        positioningSquares(square1, top - BORDER_WIDTH, left - BORDER_WIDTH);
+        positioningSquares(square2, top - BORDER_WIDTH, croppingAreaParams.width + left - square2.width());
+        positioningSquares(square3, croppingAreaParams.height + top - square3.height(), croppingAreaParams.width + left - square3.width());
+        positioningSquares(square4, croppingAreaParams.height + top - square4.height(), left - BORDER_WIDTH);
+    }
+
+    function getMaxLegalCropWidth() {
+        return originImageParams.width - parseInt(cropp.css("left"));
+    }
+
+    function getMaxLegalCropHeight() {
+        return originImageParams.height - parseInt(cropp.css("top"));
+    }
+
+    function getValidCropWidth(width) {
+        return Math.min(Math.max(width, 0), getMaxLegalCropWidth());
+    }
+
+    function getValidCropHeight(height) {
+        return Math.min(Math.max(height, 0), getMaxLegalCropHeight());
+    }
+
+    function resizeCroppingBottomRight(deltaX, deltaY) {
+        var newWidth = (croppingAreaParams.width = cropp.width() - deltaX);
+        var newHeight = (croppingAreaParams.height = cropp.height() - deltaY);
+
+        var legalWidth = getValidCropWidth(newWidth);
+        var legalHeight = getValidCropHeight(newHeight);
+
+        cropp.css({
+            width: legalWidth,
+            height: legalHeight
+        });
+    }
+
+    var imageCoords = originImg.offset();
+    var prevX, prevY;
+
     $(document).mousemove(function (event) {
-        getCroppCoords();
-        getProperty();
-        if (checkMove() && isMouseDown && !isResizing) {
-            var top = event.clientY - coords.relativeMouseY;
-            var left = event.clientX - coords.relativeMouseX;
-            console.log(top + ", " + left);
-            moveCroppArea(top, left);
-        } else if (isResizing && !isMouseDown && checkResizing(event.pageX, event.pageY)) {
-            moveSquare(event);
+        if (!isMouseDown) {
+            prevX = undefined;
+            prevY = undefined;
+            return;
+        }
+
+        var newX = Math.min(event.clientX, imageCoords.left + originImageParams.width);
+        var newY = Math.min(event.clientY, imageCoords.top + originImageParams.height);
+
+        newX = Math.max(newX, imageCoords.left);
+        newY = Math.max(newY, imageCoords.top);
+
+        if (!prevX || !prevY) {
+            prevX = newX;
+            prevY = newY;
+            return;
+        }
+
+        var deltaX = prevX - newX;
+        var deltaY = prevY - newY;
+
+        prevX = newX;
+        prevY = newY;
+
+        if (isResizing) {
+            moveCroppingAngles2(resizeAngle, deltaX, deltaY);
+            resizeCroppingBottomRight(deltaX, deltaY);
+
         } else {
-            return false;
+            var croppingAreaTop = parseInt(cropp.position().top);
+            var croppingAreaLeft = parseInt(cropp.position().left);
+
+            var newLeft = croppingAreaLeft - deltaX;
+            var newTop = croppingAreaTop - deltaY;
+
+            newLeft = getValidLeft(newLeft);
+            newTop = getValidTop(newTop);
+
+            moveCroppArea(newTop, newLeft);
+            moveCroppingAngles(newTop, newLeft);
         }
     });
 
-    isRelative.click(function () {
-        showRelativeCoords = $("#isRelative:checked").length !== 0;
-        getCroppCoords();
-    });
-
-    cropp.on("dragstart", function () {
-        return false;
-    });
-    square3.on("dragstart", croppImg, function () {
+    $(document).on("dragstart", function () {
         return false;
     });
 });
